@@ -77,8 +77,9 @@ const TEMPLATE_URL = 'https://vsddombivli.github.io/vsd_poster_generator/kids_ap
 
 // Update these coordinates after visual testing
 const FIELDS = [
-  { id: 'appeal-name',    xPct: 0.500, yPct: 0.840, fontPct: 0.025, color: '#000000', maxWPct: 0.46 },
-  { id: 'appeal-contact', xPct: 0.500, yPct: 0.865, fontPct: 0.022, color: '#000000', maxWPct: 0.46 },
+  //{ id: 'appeal-name',    xPct: 0.500, yPct: 0.840, fontPct: 0.025, color: '#000000', maxWPct: 0.46 },
+  //{ id: 'appeal-contact', xPct: 0.500, yPct: 0.865, fontPct: 0.022, color: '#000000', maxWPct: 0.46 },
+  { id: 'appeal-combined', xPct: 0.500, yPct: 0.895, fontPct: 0.032, color: '#000000', maxWPct: 0.46 },
 ];
 
 // ══════════════════════════════
@@ -95,6 +96,7 @@ function showErr(msg) {
 async function generate() {
   const name    = document.getElementById('appeal-name').value.trim();
   const contact = document.getElementById('appeal-contact').value.trim();
+  const combined = name + ' - ' + contact;
   if (!name)    { showErr('Enter name'); return; }
   if (!contact) { showErr('Enter contact number'); return; }
 
@@ -133,17 +135,23 @@ async function generate() {
   URL.revokeObjectURL(tmplBlobUrl); // free memory
 
   // Draw text fields
-  for (const f of FIELDS) {
-    const val = document.getElementById(f.id).value.trim();
-    if (!val) continue;
-    const fs = Math.round(W * f.fontPct);
-    ctx.font = `bold ${fs}px "EB Garamond", serif`;
-    ctx.fillStyle = f.color;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    wrapText(ctx, val, W * f.xPct, H * f.yPct, W * f.maxWPct, fs * 1.35);
-  }
-
+  //for (const f of FIELDS) {
+  //  const val = document.getElementById(f.id).value.trim();
+  //  if (!val) continue;
+  //  const fs = Math.round(W * f.fontPct);
+  //  ctx.font = `bold ${fs}px "EB Garamond", serif`;
+  //  ctx.fillStyle = f.color;
+  //  ctx.textAlign = 'center';
+  //  ctx.textBaseline = 'middle';
+  //  wrapText(ctx, val, W * f.xPct, H * f.yPct, W * f.maxWPct, fs * 1.35);
+  //}
+  const fs = Math.round(W * 0.032);
+  ctx.font = `bold ${fs}px "EB Garamond", serif`;
+  ctx.fillStyle = '#000000';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(combined, W * 0.500, H * 0.895);
+ 
   document.getElementById('output').style.display = 'block';
   document.getElementById('btn-download').style.display = 'block';
   document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
