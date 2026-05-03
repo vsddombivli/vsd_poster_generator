@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSD Jivdaya Appeal Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fdf6e3; font-family: "EB Garamond", serif; min-height: 100vh; padding: 20px 16px; }
+  h1 { text-align: center; color: #2d5016; font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { text-align: center; color: #7a6a50; font-size: 0.85rem; font-style: italic; margin-bottom: 20px; }
+
+  .card {
+    background: #fff; border-radius: 14px; padding: 24px;
+    max-width: 500px; margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #d4b896;
+  }
+  .form-group { margin-bottom: 16px; }
+  label {
+    font-size: 0.78rem; color: #7a6a50; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    display: block; margin-bottom: 5px;
+  }
+  input[type="text"], input[type="tel"] {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #d4b896;
+    border-radius: 7px; font-family: "EB Garamond", serif; font-size: 1rem; outline: none;
+  }
+  input:focus { border-color: #2d5016; }
+  .btn-generate {
+    width: 100%; padding: 13px; border: none; border-radius: 8px;
+    background: #2d5016; color: #fff; font-family: "EB Garamond", serif;
+    font-size: 1.05rem; font-weight: 600; cursor: pointer; margin-top: 4px;
+  }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-download {
+    width: 100%; padding: 13px; border: none; border-radius: 8px;
+    background: #e8671a; color: #fff; font-family: "EB Garamond", serif;
+    font-size: 1.05rem; font-weight: 600; cursor: pointer; margin-top: 10px; display: none;
+  }
+  .err {
+    color: #c0392b; font-size: 0.85rem; margin-top: 8px; display: none;
+    padding: 8px 12px; background: #fdecea; border-radius: 6px;
+  }
+  .output { max-width: 500px; margin: 20px auto 0; display: none; text-align: center; }
+  .output canvas { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+</style>
+</head>
+<body>
+
+<h1>📢 Jivdaya Appeal Poster</h1>
+<div class="sub">Vardhman Sanskar Dham — Jivdaya Abhiyan 2026</div>
+
+<div class="card">
+  <div class="form-group">
+    <label>Volunteer / Donor Name *</label>
+    <input type="text" id="appeal-name" placeholder="e.g. Pradipbhai Mehta">
+  </div>
+  <div class="form-group">
+    <label>Contact Number *</label>
+    <input type="tel" id="appeal-contact" placeholder="e.g. 9876543210" maxlength="10">
+  </div>
+  <div class="err" id="appeal-err"></div>
+  <button class="btn-generate" onclick="generate()">🎨 Generate Poster</button>
+</div>
+
+<div class="output" id="output">
+  <canvas id="poster-canvas"></canvas>
+  <button class="btn-download" id="btn-download" onclick="download()">⬇️ Download Poster</button>
+</div>
+
+<script>
+// ══════════════════════════════
+//  CONFIG — update URL after uploading template to GitHub
+// ══════════════════════════════
+const TEMPLATE_URL = 'https://vsddombivli.github.io/Digital_Receipt_System/appeal_template.jpg';
+
+// Update these coordinates after visual testing
+const FIELDS = [
+  { id: 'appeal-name',    xPct: 0.5, yPct: 0.60, fontPct: 0.030, color: '#2d5016', maxWPct: 0.7 },
+  { id: 'appeal-contact', xPct: 0.5, yPct: 0.68, fontPct: 0.028, color: '#2d5016', maxWPct: 0.7 },
+];
+
+// ══════════════════════════════
+
+let lastFilename = 'VSD_Appeal_Poster';
+
+function showErr(msg) {
+  const el = document.getElementById('appeal-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+async function generate() {
+  const name    = document.getElementById('appeal-name').value.trim();
+  const contact = document.getElementById('appeal-contact').value.trim();
+  if (!name)    { showErr('Enter name'); return; }
+  if (!contact) { showErr('Enter contact number'); return; }
+
+  lastFilename = 'VSD_Appeal_' + name.replace(/\s+/g, '_');
+
+  // Wait for font to load before drawing
+  await document.fonts.ready;
+
+  // Fetch template as blob so canvas never gets cross-origin tainted
+  // (GitHub Pages doesn't send CORS headers, so crossOrigin='anonymous' would
+  //  taint the canvas and break toDataURL on download)
+  let tmplBlobUrl;
+  try {
+    const resp = await fetch(TEMPLATE_URL + '?t=' + Date.now());
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    tmplBlobUrl = URL.createObjectURL(blob);
+  } catch (e) {
+    showErr('Template image failed to load. Check the GitHub URL is correct and the file is published.');
+    throw e;
+  }
+  const tmpl = await new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = () => rej(new Error('Blob image load failed'));
+    img.src = tmplBlobUrl;
+  });
+
+  const canvas = document.getElementById('poster-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = tmpl.naturalWidth, H = tmpl.naturalHeight;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.drawImage(tmpl, 0, 0, W, H);
+
+  URL.revokeObjectURL(tmplBlobUrl); // free memory
+
+  // Draw text fields
+  for (const f of FIELDS) {
+    const val = document.getElementById(f.id).value.trim();
+    if (!val) continue;
+    const fs = Math.round(W * f.fontPct);
+    ctx.font = `bold ${fs}px "EB Garamond", serif`;
+    ctx.fillStyle = f.color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    wrapText(ctx, val, W * f.xPct, H * f.yPct, W * f.maxWPct, fs * 1.35);
+  }
+
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('btn-download').style.display = 'block';
+  document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+}
+
+function download() {
+  const a = document.createElement('a');
+  a.download = lastFilename + '.png';
+  a.href = document.getElementById('poster-canvas').toDataURL('image/png');
+  a.click();
+}
+
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = text.split(' ');
+  let line = '';
+  const lines = [];
+  for (let w of words) {
+    const t = line + (line ? ' ' : '') + w;
+    if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; }
+    else line = t;
+  }
+  if (line) lines.push(line);
+  const sy = y - ((lines.length - 1) * lh) / 2;
+  lines.forEach((l, i) => ctx.fillText(l, x, sy + i * lh));
+}
+</script>
+</body>
+</html>
