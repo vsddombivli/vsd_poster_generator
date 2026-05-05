@@ -77,7 +77,8 @@
      <label>Photo Position (Top ↕ Bottom)</label>
      <input type="range" min="0" max="100" value="20"
        style="width:100%"
-       oninput="photoOffsetY = this.value/100; generate()">
+       oninput="photoOffsetY = this.value/100"
+       onchange="generate()">
    </div>
   </div>
   <div class="err" id="donor-err"></div>
@@ -211,7 +212,7 @@ async function generate() {
 
   document.getElementById('output').style.display = 'block';
   document.getElementById('btn-download').style.display = 'block';
-  document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+  // document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
 }
 
 function download() {
