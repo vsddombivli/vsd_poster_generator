@@ -60,6 +60,13 @@
     <label>Contact Number *</label>
     <input type="tel" id="appeal-contact" placeholder="e.g. 9876543210" maxlength="10">
   </div>
+  <div class="form-group">
+    <label>Font Size</label>
+    <input type="range" min="10" max="50" value="28"
+      style="width:100%"
+      oninput="appealFontSize = this.value"
+      onchange="generate()">
+  </div>
   <div class="err" id="appeal-err"></div>
   <button class="btn-generate" onclick="generate()">🎨 Generate Poster</button>
 </div>
@@ -77,13 +84,13 @@ const TEMPLATE_URL = 'https://vsddombivli.github.io/vsd_poster_generator/kids_ap
 
 // Update these coordinates after visual testing
 const FIELDS = [
-  { id: 'appeal-combined', xPct: 0.500, yPct: 0.980, fontPct: 0.034, color: '#000000', maxWPct: 0.90 },
+  { id: 'appeal-combined', xPct: 0.500, yPct: 0.990, fontPct: 0.034, color: '#000000', maxWPct: 0.90 },
 ];
 
 // ══════════════════════════════
 
 let lastFilename = 'VSD_Appeal_Poster';
-
+let appealFontSize = 28;
 function showErr(msg) {
   const el = document.getElementById('appeal-err');
   el.textContent = msg;
@@ -143,7 +150,7 @@ async function generate() {
   //  ctx.textBaseline = 'middle';
   //  wrapText(ctx, val, W * f.xPct, H * f.yPct, W * f.maxWPct, fs * 1.35);
   //}
-  const fs = Math.round(W * 0.032);
+  const fs = Math.round(appealFontSize);
   ctx.font = `bold ${fs}px "EB Garamond", serif`;
   ctx.fillStyle = '#000000';
   ctx.textAlign = 'center';
