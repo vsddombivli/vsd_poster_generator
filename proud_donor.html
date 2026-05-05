@@ -74,12 +74,17 @@
     </div>
    <!-- ADD THIS -->
    <div id="crop-control" style="display:none; margin-top:10px">
-     <label>Scroll Photo Position From Top to Bottom</label>
-     <input type="range" min="0" max="100" value="20"
-       style="width:100%"
-       oninput="photoOffsetY = this.value/100"
-       onchange="generate()">
-   </div>
+    <label>Position Vertical (Top ↕ Bottom)</label>
+    <input type="range" min="0" max="100" value="20"
+      style="width:100%"
+      oninput="photoOffsetY = this.value/100"
+      onchange="generate()">
+    <label style="margin-top:8px;display:block">Position Horizontal (Left ↔ Right)</label>
+    <input type="range" min="0" max="100" value="50"
+      style="width:100%"
+      oninput="photoOffsetX = this.value/100"
+      onchange="generate()">
+  </div>
   </div>
   <div class="err" id="donor-err"></div>
   <button class="btn-generate" onclick="generate()">🎨 Generate Poster</button>
@@ -120,7 +125,7 @@ let donorPhotoImg = null;
 let lastFilename = 'VSD_Donor_Poster';
 // Add these variables
 let photoOffsetY = 0; // 0 = top, 1 = bottom
-let photoOffsetX = 0.5; // 0 = left, 1 = right (default center)
+let photoOffsetX = 0; // 0 = left, 1 = right (default center)
 function previewPhoto(input) {
   if (!input.files.length) return;
   const reader = new FileReader();
