@@ -72,6 +72,13 @@
     <div class="photo-preview" id="donor-preview">
       <img id="donor-preview-img">
     </div>
+   <!-- ADD THIS -->
+   <div id="crop-control" style="display:none; margin-top:10px">
+     <label>Photo Position (Top ↕ Bottom)</label>
+     <input type="range" min="0" max="100" value="20"
+       style="width:100%"
+       oninput="photoOffsetY = this.value/100; generate()">
+   </div>
   </div>
   <div class="err" id="donor-err"></div>
   <button class="btn-generate" onclick="generate()">🎨 Generate Poster</button>
@@ -110,7 +117,9 @@ const NAME_CONFIG = {
 
 let donorPhotoImg = null;
 let lastFilename = 'VSD_Donor_Poster';
-
+// Add these variables
+let photoOffsetY = 0; // 0 = top, 1 = bottom
+let photoOffsetX = 0.5; // 0 = left, 1 = right (default center)
 function previewPhoto(input) {
   if (!input.files.length) return;
   const reader = new FileReader();
@@ -118,7 +127,10 @@ function previewPhoto(input) {
     document.getElementById('donor-preview-img').src = e.target.result;
     document.getElementById('donor-preview').style.display = 'block';
     const img = new Image();
-    img.onload = () => { donorPhotoImg = img; };
+    img.onload = () => { 
+     donorPhotoImg = img; 
+     document.getElementById('crop-control').style.display = 'block'; // ADD THIS 
+    };
     img.src = e.target.result;
   };
   reader.readAsDataURL(input.files[0]);
@@ -175,11 +187,15 @@ async function generate() {
   ctx.save();
   roundRect(ctx, px, py, pw, ph, p.radius);
   ctx.clip();
+  //const scale = Math.max(pw / donorPhotoImg.width, ph / donorPhotoImg.height);
+  //const sw = pw / scale, sh = ph / scale;
+  //const sx = (donorPhotoImg.width - sw) / 2;
+  //const sy = 0; // crop from top instead of center — keeps face visible
   const scale = Math.max(pw / donorPhotoImg.width, ph / donorPhotoImg.height);
   const sw = pw / scale, sh = ph / scale;
-  const sx = (donorPhotoImg.width - sw) / 2;
-  const sy = 0; // crop from top instead of center — keeps face visible
-  ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
+  const sx = (donorPhotoImg.width - sw) * photoOffsetX;
+  const sy = (donorPhotoImg.height - sh) * photoOffsetY; 
+ ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
   ctx.restore();
 
   // Draw name
