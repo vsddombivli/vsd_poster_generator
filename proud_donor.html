@@ -91,17 +91,17 @@ const TEMPLATE_URL = 'https://vsddombivli.github.io/vsd_poster_generator/proud_d
 // ── Donor photo position on template (adjust after seeing result) ──
 // These are PERCENTAGE values of template dimensions for easy scaling
 const PHOTO_CONFIG = {
-  xPct:   0.725,               // (428+802)/2 / 848
-  yPct:   0.469,               // (343+848)/2 / 1264
-  wPct:   0.441,               // (802-428) / 848
-  hPct:   0.398,               // (848-343) / 1264
+  xPct:   0.725,
+  yPct:   0.490,  // down from 0.469
+  wPct:   0.441,
+  hPct:   0.370,  // reduce height slightly
   radius: 8,
 };
 
 const NAME_CONFIG = {
-  xPct:    0.725,              // (430+800)/2 / 848
-  yPct:    0.733,              // (903+950)/2 / 1264
-  fontPct: 0.038,
+  xPct:    0.725,
+  yPct:    0.718,  // up from 0.733
+  fontPct: 0.040,
   color:   '#ffffff',
   maxWPct: 0.42,
 };
