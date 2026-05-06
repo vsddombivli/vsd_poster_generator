@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VSD Jivdaya Kids Appeal Poster</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #fdf6e3; font-family: "EB Garamond", serif; min-height: 100vh; padding: 20px 16px; }
@@ -151,8 +152,8 @@ async function generate() {
   //  wrapText(ctx, val, W * f.xPct, H * f.yPct, W * f.maxWPct, fs * 1.35);
   //}
   const fs = Math.round(appealFontSize);
-  ctx.font = `bold ${fs}px "EB Garamond", serif`;
-  ctx.fillStyle = '#000000';
+  ctx.font = `bold ${fs}px 'Barlow Condensed', sans-serif`;
+  ctx.fillStyle = '#963E10';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(combined, W * 0.500, H - 27);
