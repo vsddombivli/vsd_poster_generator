@@ -206,7 +206,7 @@ async function generate() {
 
   // Draw name
   const n = NAME_CONFIG;
- let fs = Math.round(W * f.fontPct);
+  let fs = Math.round(W * n.fontPct);
   // Reduce font size for long names
   ctx.font = `bold ${fs}px "EB Garamond", serif`;
   const testWidth = ctx.measureText(val).width;
