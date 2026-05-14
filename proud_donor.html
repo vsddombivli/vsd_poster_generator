@@ -116,7 +116,7 @@ const NAME_CONFIG = {
   yPct:    0.660,  // up slightly into box
   fontPct: 0.034,
   color:   '#4a1500',  // dark brown to match template
-  maxWPct: 0.64,
+  maxWPct: 0.48,
 };
 
 // ══════════════════════════════
@@ -206,8 +206,15 @@ async function generate() {
 
   // Draw name
   const n = NAME_CONFIG;
-  const fs = Math.round(W * n.fontPct);
+ let fs = Math.round(W * f.fontPct);
+  // Reduce font size for long names
   ctx.font = `bold ${fs}px "EB Garamond", serif`;
+  const testWidth = ctx.measureText(val).width;
+  const maxW = W * f.maxWPct;
+  if (testWidth > maxW * 1.5) fs = Math.round(fs * 0.75);
+  else if (testWidth > maxW) fs = Math.round(fs * 0.88);
+  ctx.font = `bold ${fs}px "EB Garamond", serif`;
+ 
   ctx.fillStyle = n.color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
