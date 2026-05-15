@@ -86,6 +86,12 @@
       onchange="generate()">
   </div>
   </div>
+  <div class="form-group" id="font-size-group" style="display:none">
+    <label>Name Font Size: <span id="font-size-val">3.4</span>%</label>
+    <input type="range" id="font-size-slider" min="1.5" max="6" step="0.1" value="3.4"
+      style="width:100%;accent-color:#2d5016;"
+      oninput="document.getElementById('font-size-val').textContent=this.value">
+  </div>
   <div class="err" id="donor-err"></div>
   <button class="btn-generate" onclick="generate()">🎨 Generate Poster</button>
 </div>
@@ -136,6 +142,7 @@ function previewPhoto(input) {
     img.onload = () => { 
      donorPhotoImg = img; 
      document.getElementById('crop-control').style.display = 'block'; // ADD THIS 
+     document.getElementById('font-size-group').style.display = 'block';
     };
     img.src = e.target.result;
   };
@@ -206,7 +213,8 @@ async function generate() {
 
   // Draw name
   const n = NAME_CONFIG;
-  const fs = Math.round(W * n.fontPct);
+  const sliderVal = parseFloat(document.getElementById('font-size-slider').value) / 100;
+  const fs = Math.round(W * sliderVal);
   ctx.font = `bold ${fs}px "EB Garamond", serif`;
   ctx.fillStyle = n.color;
   ctx.textAlign = 'center';
