@@ -216,7 +216,7 @@ async function generate() {
   //  taint the canvas and break toDataURL on download)
   let tmplBlobUrl;
   try {
-    const resp = await fetch(TEMPLATE_URL + '?t=' + Date.now());
+    const resp = await fetch(TEMPLATE_ACTIVE + '?t=' + Date.now());
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const blob = await resp.blob();
     tmplBlobUrl = URL.createObjectURL(blob);
