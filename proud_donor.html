@@ -138,7 +138,7 @@
 //};
 
 // ── Template 2 config — adjust these after first test ──
-const TEMPLATE2_URL = 'https://vsddombivli.github.io/vsd_poster_generator/proud_donor_template2.jpg';
+const TEMPLATE2_URL = 'https://vsddombivli.github.io/vsd_poster_generator/proud_donor_final_template.png';
 
 const PHOTO_CONFIG2 = {
   xPct:   0.500,  // center horizontally — adjust after seeing result
@@ -236,15 +236,15 @@ async function generate() {
   const W = tmpl.naturalWidth, H = tmpl.naturalHeight;
   canvas.width = W;
   canvas.height = H;
-  ctx.drawImage(tmpl, 0, 0, W, H);
+  //ctx.drawImage(tmpl, 0, 0, W, H);
 
   // Draw photo
   const p = PHOTO_CONFIG2;
   const pw = W * p.wPct, ph = H * p.hPct;
   const px = W * p.xPct - pw / 2, py = H * p.yPct - ph / 2;
-  ctx.save();
-  roundRect(ctx, px, py, pw, ph, p.radius);
-  ctx.clip();
+  //ctx.save();
+  //roundRect(ctx, px, py, pw, ph, p.radius);
+  //ctx.clip();
   //const scale = Math.max(pw / donorPhotoImg.width, ph / donorPhotoImg.height);
   //const sw = pw / scale, sh = ph / scale;
   //const sx = (donorPhotoImg.width - sw) / 2;
@@ -254,7 +254,7 @@ async function generate() {
   const sx = (donorPhotoImg.width - sw) * photoOffsetX;
   const sy = (donorPhotoImg.height - sh) * photoOffsetY; 
   ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
-  ctx.restore();
+  //ctx.restore();
 
   // Draw name
   const n = NAME_CONFIG2;
