@@ -86,7 +86,7 @@
    <!-- ADD THIS -->
    <div id="crop-control" style="display:none; margin-top:10px">
     <label>Position Vertical (Top ↕ Bottom)</label>
-    <input type="range" min="0" max="100" value="20"
+    <input type="range" min="0" max="100" value="0"
       style="width:100%"
       oninput="photoOffsetY = this.value/100"
       onchange="generate()">
@@ -142,7 +142,7 @@ const TEMPLATE2_URL = 'https://vsddombivli.github.io/vsd_poster_generator/proud_
 
 const PHOTO_CONFIG2 = {
   xPct:   0.490,  // center horizontally — adjust after seeing result
-  yPct:   0.385,  // vertical center of the paper note area
+  yPct:   0.390,  // vertical center of the paper note area
   wPct:   0.735,  // width of paper note area
   hPct:   0.370,  // height of paper note area
   radius: 0,
