@@ -61,6 +61,17 @@
 <h1>🏅 Proud Donor Poster</h1>
 <div class="sub">Vardhman Sanskar Dham — Jivdaya Abhiyan 2026</div>
 
+<div style="display:flex;gap:10px;max-width:500px;margin:0 auto 16px;">
+  <button id="btn-t1" onclick="selectTemplate(1)"
+    style="flex:1;padding:10px;border-radius:8px;border:2px solid #2d5016;background:#2d5016;color:#fff;font-family:'EB Garamond',serif;font-size:1rem;font-weight:600;cursor:pointer;">
+    🖼 Template 1 (Current)
+  </button>
+  <button id="btn-t2" onclick="selectTemplate(2)"
+    style="flex:1;padding:10px;border-radius:8px;border:2px solid #2d5016;background:#fff;color:#2d5016;font-family:'EB Garamond',serif;font-size:1rem;font-weight:600;cursor:pointer;">
+    🖼 Template 2 (New)
+  </button>
+</div>
+
 <div class="card">
   <div class="form-group">
     <label>Donor Name *</label>
@@ -126,6 +137,36 @@ const NAME_CONFIG = {
   maxWPct: 0.48,
 };
 
+// ── Template 2 config — adjust these after first test ──
+const TEMPLATE2_URL = 'https://vsddombivli.github.io/vsd_poster_generator/proud_donor_template2.jpg';
+
+const PHOTO_CONFIG2 = {
+  xPct:   0.500,  // center horizontally — adjust after seeing result
+  yPct:   0.370,  // vertical center of the paper note area
+  wPct:   0.520,  // width of paper note area
+  hPct:   0.280,  // height of paper note area
+  radius: 0,
+};
+
+const NAME_CONFIG2 = {
+  xPct:    0.500,
+  yPct:    0.720,
+  fontPct: 0.034,
+  color:   '#4a1500',
+  maxWPct: 0.55,
+};
+
+// ── Active template state ──
+let activeTemplate = 1;
+
+function selectTemplate(t) {
+  activeTemplate = t;
+  document.getElementById('btn-t1').style.background = t === 1 ? '#2d5016' : '#fff';
+  document.getElementById('btn-t1').style.color      = t === 1 ? '#fff'    : '#2d5016';
+  document.getElementById('btn-t2').style.background = t === 2 ? '#2d5016' : '#fff';
+  document.getElementById('btn-t2').style.color      = t === 2 ? '#fff'    : '#2d5016';
+  if (donorPhotoImg) generate(); // re-render if photo already loaded
+}
 // ══════════════════════════════
 
 let donorPhotoImg = null;
@@ -163,7 +204,10 @@ async function generate() {
   if (!donorPhotoImg) { showErr('Upload donor photo'); return; }
 
   lastFilename = 'VSD_Donor_' + name.replace(/\s+/g, '_');
-
+  const TEMPLATE_ACTIVE = activeTemplate === 2 ? TEMPLATE2_URL : TEMPLATE_URL;
+  const p = activeTemplate === 2 ? PHOTO_CONFIG2 : PHOTO_CONFIG;
+  const n = activeTemplate === 2 ? NAME_CONFIG2  : NAME_CONFIG;
+ 
   // Wait for font to load before drawing
   await document.fonts.ready;
 
@@ -195,7 +239,7 @@ async function generate() {
   ctx.drawImage(tmpl, 0, 0, W, H);
 
   // Draw photo
-  const p = PHOTO_CONFIG;
+  //const p = PHOTO_CONFIG;
   const pw = W * p.wPct, ph = H * p.hPct;
   const px = W * p.xPct - pw / 2, py = H * p.yPct - ph / 2;
   ctx.save();
@@ -209,11 +253,11 @@ async function generate() {
   const sw = pw / scale, sh = ph / scale;
   const sx = (donorPhotoImg.width - sw) * photoOffsetX;
   const sy = (donorPhotoImg.height - sh) * photoOffsetY; 
- ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
+  ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
   ctx.restore();
 
   // Draw name
-  const n = NAME_CONFIG;
+  //const n = NAME_CONFIG;
   const sliderVal = parseFloat(document.getElementById('font-size-slider').value) / 100;
   const fs = Math.round(W * sliderVal);
   ctx.font = `bold ${fs}px "EB Garamond", serif`;
