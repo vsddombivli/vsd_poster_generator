@@ -254,6 +254,7 @@ async function generate() {
   const sx = (donorPhotoImg.width - sw) * photoOffsetX;
   const sy = (donorPhotoImg.height - sh) * photoOffsetY; 
   ctx.drawImage(donorPhotoImg, sx, sy, sw, sh, px, py, pw, ph);
+  ctx.drawImage(tmpl, 0, 0, W, H); 
   //ctx.restore();
 
   // Draw name
