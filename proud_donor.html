@@ -111,6 +111,8 @@
 <div class="output" id="output">
   <canvas id="poster-canvas"></canvas>
   <button class="btn-download" id="btn-download" onclick="download()">⬇️ Download Poster</button>
+  <button class="btn-download" id="btn-share" onclick="shareWhatsApp()" 
+   style="background:#25D366; display:none; margin-top:10px;">📲 Share on WhatsApp</button>
 </div>
 
 <script>
@@ -271,6 +273,7 @@ async function generate() {
 
   document.getElementById('output').style.display = 'block';
   document.getElementById('btn-download').style.display = 'block';
+  document.getElementById('btn-share').style.display = 'block';
   // document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -303,6 +306,40 @@ function wrapText(ctx, text, x, y, maxW, lh) {
   if (line) lines.push(line);
   const sy = y - ((lines.length - 1) * lh) / 2;
   lines.forEach((l, i) => ctx.fillText(l, x, sy + i * lh));
+}
+
+async function shareWhatsApp() {
+  const canvas = document.getElementById('poster-canvas');
+  
+  // Convert canvas to blob
+  canvas.toBlob(async (blob) => {
+    const file = new File([blob], lastFilename + '.png', { type: 'image/png' });
+    
+    // Use Web Share API if supported (works on mobile)
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          // No title, no text — image only
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') fallbackWhatsApp(blob);
+      }
+    } else {
+      fallbackWhatsApp(blob);
+    }
+  }, 'image/png');
+}
+
+function fallbackWhatsApp(blob) {
+  // Desktop fallback — download the image, user shares manually
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = lastFilename + '.png';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('Image downloaded! Open WhatsApp and share the downloaded image.');
 }
 </script>
 </body>
